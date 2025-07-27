@@ -9,6 +9,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.binqi.ytgpicturebackend.exception.BusinessException;
 import com.binqi.ytgpicturebackend.exception.ErrorCode;
 import com.binqi.ytgpicturebackend.exception.ThrowUtils;
+import com.binqi.ytgpicturebackend.manager.sharding.DynamicShardingManager;
 import com.binqi.ytgpicturebackend.mapper.SpaceMapper;
 import com.binqi.ytgpicturebackend.model.dto.space.SpaceAddRequest;
 import com.binqi.ytgpicturebackend.model.dto.space.SpaceQueryRequest;
@@ -24,6 +25,7 @@ import com.binqi.ytgpicturebackend.service.SpaceService;
 import com.binqi.ytgpicturebackend.service.SpaceUserService;
 import com.binqi.ytgpicturebackend.service.UserService;
 import org.springframework.beans.BeanUtils;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionTemplate;
 
@@ -52,6 +54,10 @@ public class SpaceServiceImpl extends ServiceImpl<SpaceMapper, Space>
 
     @Resource
     private SpaceUserService spaceUserService;
+
+//    @Resource
+//    @Lazy
+//    private DynamicShardingManager dynamicShardingManager;
 
     /**
      * 创建空间
@@ -108,6 +114,8 @@ public class SpaceServiceImpl extends ServiceImpl<SpaceMapper, Space>
                     result = spaceUserService.save(spaceUser);
                     ThrowUtils.throwIf(!result, ErrorCode.OPERATION_ERROR, "创建团队成员记录失败");
                 }
+//                // 创建分表
+//                dynamicShardingManager.createSpacePictureTable(space);
                 // 返回新写入的数据 id
                 return space.getId();
             });
