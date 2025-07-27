@@ -10,6 +10,7 @@ import com.binqi.ytgpicturebackend.constant.UserConstant;
 import com.binqi.ytgpicturebackend.exception.BusinessException;
 import com.binqi.ytgpicturebackend.exception.ErrorCode;
 import com.binqi.ytgpicturebackend.exception.ThrowUtils;
+import com.binqi.ytgpicturebackend.manager.auth.SpaceUserAuthManager;
 import com.binqi.ytgpicturebackend.model.dto.space.*;
 import com.binqi.ytgpicturebackend.model.entity.Space;
 import com.binqi.ytgpicturebackend.model.entity.User;
@@ -40,6 +41,9 @@ public class SpaceController {
 
     @Resource
     private SpaceService spaceService;
+
+    @Resource
+    private SpaceUserAuthManager spaceUserAuthManager;
 
     @PostMapping("/add")
     public BaseResponse<Long> addSpace(@RequestBody SpaceAddRequest spaceAddRequest, HttpServletRequest request) {
@@ -124,8 +128,12 @@ public class SpaceController {
         // 查询数据库
         Space space = spaceService.getById(id);
         ThrowUtils.throwIf(space == null, ErrorCode.NOT_FOUND_ERROR);
+        SpaceVO spaceVO = spaceService.getSpaceVO(space, request);
+        User loginUser = userService.getLoginUser(request);
+        List<String> permissionList = spaceUserAuthManager.getPermissionList(space, loginUser);
+        spaceVO.setPermissionList(permissionList);
         // 获取封装类
-        return ResultUtils.success(spaceService.getSpaceVO(space, request));
+        return ResultUtils.success(spaceVO);
     }
 
     /**
