@@ -38,6 +38,11 @@ const fixedMenuItems = [
     label: '我的空间',
     icon: () => h(UserOutlined),
   },
+  {
+    key: '/add_space?type=' + SPACE_TYPE_ENUM.TEAM,
+    label: '创建团队',
+    icon: () => h(TeamOutlined),
+  },
 ]
 
 const teamSpaceList = ref<API.SpaceUserVO[]>([])
